@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import my_list_view, CreateView, ListView
+from .views import my_list_view, CreateView, DetailView
 
 
 urlpatterns = [
@@ -11,7 +11,7 @@ urlpatterns = [
     ),
     url(
         r'^(?P<pk>[0-9]+)/$',
-        ListView.as_view(),
+        DetailView.as_view(),
         name='can-detail',
     ),
     url(

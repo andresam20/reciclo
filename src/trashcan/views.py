@@ -1,10 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-
 from django.views.generic import View
+
+from rest_framework import viewsets
 
 from .models import TrashCan, Level
 from .forms import TrashCanForm
+from .serializers import TrashCanSerializer, LevelSerializer
 
 
 def my_list_view(request):
@@ -40,7 +42,7 @@ class CreateView(View):
         return self.get(request, errors=form.errors)
 
 
-class ListView(View):
+class DetailView(View):
 
     template_name = 'trashcan/detalle.html'
 
@@ -51,6 +53,24 @@ class ListView(View):
         context = {
             'errors': kwargs.get('errors'),
             'can': TrashCan.objects.filter(pk=pk).first(),
-            'levels': Level.objects.get_levels(pk), 
+            'levels': Level.objects.get_levels(pk),
         }
         return render(request, self.template_name, context)
+
+
+class TrashCanViewSet(viewsets.ReadOnlyModelViewSet):
+
+    queryset = TrashCan.objects.all()
+    serializer_class = TrashCanSerializer
+    filter_fields = (
+        'barcode',
+    )
+    search_fields = (
+        'barcode',
+    )
+
+
+class LevelViewSet(viewsets.ModelViewSet):
+
+    queryset = Level.objects.all()
+    serializer_class = LevelSerializer
