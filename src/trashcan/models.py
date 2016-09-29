@@ -2,6 +2,28 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+class TrashCanQuerySet(models.QuerySet):
+
+    def get_not_address(self):
+        return self.filter(
+            models.Q(address='') | models.Q(address__isnull=True)
+        )
+
+    def get_barcode(self):
+        return self.filter(
+            ~models.Q(barcode=''),
+            barcode__isnull=False,
+        )
+
+    def count_barcode(self):
+        return self.get_barcode().count()
+
+    def get_gt_depth(self, depth):
+        return self.filter(
+            depth__gt=depth,
+        )
+
+
 class TrashCan(models.Model):
 
     depth = models.FloatField(help_text='Profundidad del tacho.')
@@ -28,6 +50,27 @@ class TrashCan(models.Model):
         User,
         through='Harvest',
     )
+
+    objects = TrashCanQuerySet.as_manager()
+
+    def has_address(self):
+        return bool(self.address)
+        # if self.address:
+        #     return True
+        # return False
+
+    @property
+    def tiene_address(self):
+        return self.has_address()
+
+    def set_address(self):
+        if self.tiene_address:
+            return
+        self.address = 'Almacen Pripal'
+
+    def save(self, *args, **kwargs):
+        self.set_address()
+        super(TrashCan, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.pk)
