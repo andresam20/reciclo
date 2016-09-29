@@ -9,6 +9,12 @@ class TrashCanQuerySet(models.QuerySet):
             models.Q(address='') | models.Q(address__isnull=True)
         )
 
+    def get_lat_lng(self):
+        return self.filter(
+            lat__isnull=False,
+            lng__isnull=False,
+        )
+
     def get_barcode(self):
         return self.filter(
             ~models.Q(barcode=''),
@@ -79,6 +85,12 @@ class TrashCan(models.Model):
         db_table = 'trash_can'
 
 
+class LevelQuerySet(models.QuerySet):
+
+    def get_levels(self, trash_can_pk):
+        return self.filter(trash_can=trash_can_pk).order_by('-time')
+
+
 class Level(models.Model):
 
     trash_can = models.ForeignKey(
@@ -91,6 +103,8 @@ class Level(models.Model):
     distance = models.FloatField(
         help_text='Distancia del sensor a la basura (cm).'
     )
+
+    objects = LevelQuerySet.as_manager()
 
     def __str__(self):
         return str(self.pk)

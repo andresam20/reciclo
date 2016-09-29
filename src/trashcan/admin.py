@@ -11,6 +11,8 @@ class TrashCanAdmin(admin.ModelAdmin):
         'barcode',
         'depth',
         'address',
+        'lat',
+        'lng',
     )
     list_filter = (
         'depth',
