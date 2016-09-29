@@ -1,0 +1,1 @@
+web: cd src && gunicorn reciclo.wsgi --log-file -
