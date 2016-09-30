@@ -4,3 +4,4 @@ django-filter==0.15.1
 djangorestframework==3.4.7
 ipdb==0.10.1
 gunicorn==19.6.0
+dj-database-url==0.4.1
