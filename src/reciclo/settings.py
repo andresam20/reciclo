@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
+import ast
 import os
 import dj_database_url
 
@@ -25,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'iqtc8upi$xy&68bs78hs7(gcp%=-(vz141e_p+lj7^dcur(w$3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ast.literal_eval(os.getenv('DEBUG', 'True'))
 
 ALLOWED_HOSTS = ['*']
 
@@ -162,7 +163,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 30,
 }
 
-
-# Update database configuration with $DATABASE_URL.
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+if not DEBUG:
+    # Update database configuration with $DATABASE_URL.
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
