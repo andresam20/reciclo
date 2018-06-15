@@ -1,0 +1,18 @@
+
+>>> from trashcan.models import *
+
+============= Solucion 1 ======================================================
+
+>>> usuarios = Harvest.objects.filter(status=1).filter(date='2018-06-13')
+>>> for obj in usuarios:
+...     print(obj.user)
+...
+paolo
+pepe
+
+============= Solucion 2 ======================================================
+
+>>> usuarios = Harvest.objects.filter(status=0).filter(date='2018-06-15')
+>>> usuarios.count()
+2
+
